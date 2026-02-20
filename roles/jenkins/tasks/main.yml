@@ -1,26 +1,47 @@
+# ---
+# - name: Add Jenkins apt key safely
+#   ansible.builtin.apt_key:
+#     url: https://pkg.jenkins.io/debian/jenkins.io.key
+#     state: present
+#     keyring: /usr/share/keyrings/jenkins-keyring.gpg
+
+# - name: Add Jenkins repository
+#   ansible.builtin.apt_repository:
+#     repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian binary/"
+#     state: present
+
+# - name: Update apt cache after adding Jenkins repo
+#   apt:
+#     update_cache: yes
+
+# - name: Install Jenkins
+#   apt:
+#     name: jenkins
+#     state: present
+
+# - name: Start Jenkins service
+#   service:
+#     name: jenkins
+#     state: started
+#     enabled: yes
+
 ---
-- name: Add Jenkins apt key safely
-  ansible.builtin.apt_key:
-    url: https://pkg.jenkins.io/debian/jenkins.io.key
-    state: present
-    keyring: /usr/share/keyrings/jenkins-keyring.gpg
-
-- name: Add Jenkins repository
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian binary/"
-    state: present
-
-- name: Update apt cache after adding Jenkins repo
+- name: Ensure snapd is installed
   apt:
+    name: snapd
+    state: present
     update_cache: yes
 
-- name: Install Jenkins
-  apt:
+- name: Ensure classic snaps are supported
+  command: "snap install core"
+  args:
+    creates: /snap/core/current
+
+- name: Install Jenkins via snap
+  snap:
     name: jenkins
+    classic: yes
     state: present
 
 - name: Start Jenkins service
-  service:
-    name: jenkins
-    state: started
-    enabled: yes
+  command: "snap start jenkins"
