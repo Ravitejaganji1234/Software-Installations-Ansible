@@ -1,12 +1,13 @@
 ---
-- name: Add Jenkins apt key
-  apt_key:
+- name: Add Jenkins apt key safely
+  ansible.builtin.apt_key:
     url: https://pkg.jenkins.io/debian/jenkins.io.key
     state: present
+    keyring: /usr/share/keyrings/jenkins-keyring.gpg
 
-- name: Add Jenkins repo
-  apt_repository:
-    repo: deb https://pkg.jenkins.io/debian binary/
+- name: Add Jenkins repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian binary/"
     state: present
 
 - name: Update apt cache after adding Jenkins repo
