@@ -1,0 +1,9 @@
+---
+- name: Install DevOps Tools on Local VM
+  hosts: local
+  become: yes
+  roles:
+    - java
+    - nodejs
+    - docker
+    - jenkins
